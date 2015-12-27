@@ -11,7 +11,7 @@ public class Contract {
     static final String STUDENTS_TABLE_NAME = "students";
 
     public static final String SCHEME = "content://";
-    public static final String AUTHORITY = "com.pgfmusic.simplecontentprovider";//.College";
+    public static final String AUTHORITY = "com.pgfmusic.simplecontentprovider";
     public static final String BASE_URI = SCHEME + AUTHORITY;
     public static final String PATH = "/students";
 }
