@@ -44,6 +44,7 @@ public class StudentsProvider extends ContentProvider {
         Context context = getContext();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         db = dbHelper.getWritableDatabase();
+
         return (db == null)? false:true;
     }
 
@@ -92,7 +93,7 @@ public class StudentsProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         // Add a new student record
-        long rowID = db.insert(DatabaseHelper.STUDENTS_TABLE_NAME, "", values);
+        long rowID = db.insert(DatabaseHelper.STUDENTS_TABLE_NAME, null, values);
 
         // If record is added succesfully
 
