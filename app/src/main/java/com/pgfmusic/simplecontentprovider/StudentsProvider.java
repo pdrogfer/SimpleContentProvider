@@ -79,9 +79,9 @@ public class StudentsProvider extends ContentProvider {
     public String getType(Uri uri) {
         switch (uriMatcher.match(uri)) {
             case STUDENTS:
-                return "vnd.android.cursor.dir/vnd.example.students";
+                return "vnd.android.cursor.dir/vnd.simplecontentprovider.students";
             case STUDENT_ID:
-                return "vnd.android.cursor.item/vnd.example.students";
+                return "vnd.android.cursor.item/vnd.simplecontentprovider.students";
 
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
