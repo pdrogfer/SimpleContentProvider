@@ -16,8 +16,8 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.pgfmusic.simplecontentprovider"
             android:name="com.pgfmusic.simplecontentprovider.StudentsProvider"
+            android:authorities="com.pgfmusic.simplecontentprovider"
             android:enabled="true"
             android:exported="true">
         </provider>

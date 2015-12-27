@@ -12,17 +12,16 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
-    static final String DATABASE_NAME = "College";
-    static final String STUDENTS_TABLE_NAME = "students";
-    static final int DATABASE_VERSION = 2;
+
+    static final int DATABASE_VERSION = 1;
     static final String CREATE_DB_TABLE =
-            " CREATE TABLE " + STUDENTS_TABLE_NAME +
+            " CREATE TABLE " + Contract.STUDENTS_TABLE_NAME +
             " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             " name TEXT NOT NULL, " +
             " grade TEXT NOT NULL);";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Contract.DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -32,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + STUDENTS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Contract.STUDENTS_TABLE_NAME);
         onCreate(db);
     }
 }

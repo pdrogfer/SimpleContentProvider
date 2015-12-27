@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -44,7 +45,7 @@ public class StudentsProvider extends ContentProvider {
         Context context = getContext();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         db = dbHelper.getWritableDatabase();
-
+        Log.i(Contract.TAG, "db == null: " + (db == null));
         return (db == null)? false:true;
     }
 
@@ -52,7 +53,7 @@ public class StudentsProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(DatabaseHelper.STUDENTS_TABLE_NAME);
+        queryBuilder.setTables(Contract.STUDENTS_TABLE_NAME);
         switch (uriMatcher.match(uri)) {
             case STUDENTS:
                 queryBuilder.setProjectionMap(STUDENTS_PROJECTION_MAP);
@@ -80,9 +81,9 @@ public class StudentsProvider extends ContentProvider {
     public String getType(Uri uri) {
         switch (uriMatcher.match(uri)) {
             case STUDENTS:
-                return "vnd.android.cursor.dir/vnd.simplecontentprovider.students";
+                return "vnd.android.cursor.dir/vnd.com.pgfmusic.simplecontentprovider.College.students";
             case STUDENT_ID:
-                return "vnd.android.cursor.item/vnd.simplecontentprovider.students";
+                return "vnd.android.cursor.item/vnd.com.pgfmusic.simplecontentprovider.College.students";
 
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -93,7 +94,7 @@ public class StudentsProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         // Add a new student record
-        long rowID = db.insert(DatabaseHelper.STUDENTS_TABLE_NAME, null, values);
+        long rowID = db.insert(Contract.STUDENTS_TABLE_NAME, null, values);
 
         // If record is added succesfully
 
