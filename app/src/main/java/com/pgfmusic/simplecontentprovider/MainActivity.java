@@ -1,6 +1,7 @@
 package com.pgfmusic.simplecontentprovider;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteQuery;
@@ -10,8 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,15 +28,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText etGrade;
     Button btnAddName;
     Button btnRetrStudents;
-    TextView tvResults;
+    ListView lvResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        etName = (EditText) findViewById(R.id.et_name);
+        etGrade = (EditText) findViewById(R.id.et_grade);
         btnAddName = (Button) findViewById(R.id.btn_add_name);
         btnRetrStudents = (Button) findViewById(R.id.btn_retrieve_students);
-        tvResults = (TextView) findViewById(R.id.tv_results);
+        lvResults = (ListView) findViewById(R.id.lvResults);
         btnAddName.setOnClickListener(this);
         btnRetrStudents.setOnClickListener(this);
     }
@@ -44,13 +51,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ((EditText)findViewById(R.id.et_name)).getText().toString());
 
         values.put(StudentsProvider.GRADE,
-                ((EditText)findViewById(R.id.et_grade)).getText().toString());
+                ((EditText) findViewById(R.id.et_grade)).getText().toString());
 
         Uri uri = getContentResolver().insert(
                 StudentsProvider.CONTENT_URI, values);
 
         Toast.makeText(getBaseContext(),
                 uri.toString(), Toast.LENGTH_LONG).show();
+        etName.setText("");
+        etGrade.setText("");
     }
 
     public void onClickRetrieveStudents() {
@@ -60,23 +69,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Uri students = Uri.parse(URL);
         Cursor c = getContentResolver().query(students, null, null, null, "name");
 
-        ArrayList<String> results = new ArrayList<>();
-        // Usually you want a ListView to show the data. Using a TextView for simplicity
-
         if (c.moveToFirst()) {
-            do {
-                results.add(c.getString(c.getColumnIndex(StudentsProvider._ID)) +
-                        ", " + c.getString(c.getColumnIndex(StudentsProvider.NAME)) +
-                        ", " + c.getString(c.getColumnIndex(StudentsProvider.GRADE)));
-            } while (c.moveToNext());
-            String text = "";
-            for (String result: results) {
-                text += result + "\n";
-            }
-            tvResults.setText(text);
+            populateListViewResults(c);
         } else {
             Log.i(Contract.TAG, "Cursor not working");
         }
+    }
+
+    public void populateListViewResults(Cursor cursor) {
+        StudentsAdapter studentsAdapter = new StudentsAdapter(this, cursor, 0);
+        lvResults.setAdapter(studentsAdapter);
     }
 
 

@@ -56,13 +56,9 @@
         android:layout_below="@+id/btn_add_name"
         android:layout_centerHorizontal="true" />
 
-    <TextView
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_results"
-        android:layout_below="@+id/btn_retrieve_students"
-        android:layout_alignStart="@+id/textView"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/textView"
-        android:hint="results" />
+        android:id="@+id/lvResults"
+        android:layout_below="@+id/btn_retrieve_students" />
 </RelativeLayout>
