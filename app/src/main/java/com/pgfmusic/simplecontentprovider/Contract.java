@@ -14,4 +14,8 @@ public class Contract {
     public static final String AUTHORITY = "com.pgfmusic.simplecontentprovider";
     public static final String BASE_URI = SCHEME + AUTHORITY;
     public static final String PATH = "/students";
+
+    public static final String COL_ID = "_id";
+    public static final String COL_NAME = "name";
+    public static final String COL_GRADE = "grade";
 }

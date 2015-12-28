@@ -1,8 +1,11 @@
 package com.pgfmusic.simplecontentprovider;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteQuery;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -22,7 +25,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor>{
+
+    private static final int STUDENTS_LOADER = 0;
+    StudentsAdapter studentsAdapter;
 
     EditText etName;
     EditText etGrade;
@@ -41,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lvResults = (ListView) findViewById(R.id.lvResults);
         btnAddName.setOnClickListener(this);
         btnRetrStudents.setOnClickListener(this);
+
+        studentsAdapter = new StudentsAdapter(this, null, 0);
+        lvResults.setAdapter(studentsAdapter);
+        getLoaderManager().initLoader(STUDENTS_LOADER, null, this);
     }
 
     public void onClickAddName() {
@@ -48,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ContentValues values = new ContentValues();
 
         values.put(StudentsProvider.NAME,
-                ((EditText)findViewById(R.id.et_name)).getText().toString());
+                ((EditText) findViewById(R.id.et_name)).getText().toString());
 
         values.put(StudentsProvider.GRADE,
                 ((EditText) findViewById(R.id.et_grade)).getText().toString());
@@ -63,22 +73,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onClickRetrieveStudents() {
-        // Retrieve student records
-        String URL = Contract.BASE_URI + Contract.PATH;
-        Log.i(Contract.TAG, "Retrieving: " + URL);
-        Uri students = Uri.parse(URL);
-        Cursor c = getContentResolver().query(students, null, null, null, "name");
 
-        if (c.moveToFirst()) {
-            populateListViewResults(c);
-        } else {
-            Log.i(Contract.TAG, "Cursor not working");
-        }
     }
 
     public void populateListViewResults(Cursor cursor) {
-        StudentsAdapter studentsAdapter = new StudentsAdapter(this, cursor, 0);
-        lvResults.setAdapter(studentsAdapter);
     }
 
 
@@ -89,8 +87,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 onClickAddName();
                 break;
             case R.id.btn_retrieve_students:
-                onClickRetrieveStudents();
+                // the loader is suposed to work automatically
                 break;
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // Retrieve student records
+        String URL = Contract.BASE_URI + Contract.PATH;
+        Log.i(Contract.TAG, "Retrieving: " + URL);
+        Uri studentsUri = Uri.parse(URL);
+        String sortOrder = Contract.COL_ID + " ASC";
+        return new CursorLoader(this, studentsUri, null, null, null, sortOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        studentsAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        studentsAdapter.swapCursor(null);
+
     }
 }
